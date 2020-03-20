@@ -22,9 +22,9 @@ public class ReadFile {
 	static double total = 0;
 	static double max = 0;
 
-	static Connection myConn = null;
-	static Statement myStmt = null;
-	ResultSet myRs = null;
+	static Connection connection = null;
+	static Statement statement = null;
+	ResultSet rs = null;
 	static String databaseName = "HackPro";
 	static String url = "jdbc:mysql://localhost:3333/" + databaseName;
 	static String userName = "root";
@@ -34,19 +34,19 @@ public class ReadFile {
 		JSONObject obj = new JSONObject();
 
 		try {
-			myConn = DriverManager.getConnection(url, userName, passWord);
+			connection = DriverManager.getConnection(url, userName, passWord);
 
 			System.out.println("Database connection successful!\n");
 
-			myStmt = myConn.createStatement();
+			statement = connection.createStatement();
 
-			PreparedStatement pStmt = (PreparedStatement) myConn
+			PreparedStatement pStmt = (PreparedStatement) connection
 					.prepareStatement("INSERT into table1 (transaction, avg, max) values(?,?,?)");
 			String line;
 			br = new BufferedReader(new FileReader("C:\\Users\\haris\\Downloads\\sample-input.txt"));
 			while ((line = br.readLine()) != null) {
 				StringTokenizer stringTokenizer = new StringTokenizer(line, " ");
-				pStmt.setString(1, "Transaction1");
+				pStmt.setString(1, "Transaction2");
 				while (stringTokenizer.hasMoreElements()) {
 //iterating to required cpu value in a row
 					int x = 0;
@@ -69,9 +69,12 @@ public class ReadFile {
 //					iterator
 
 					itr++;
+					
 //					pushing it to json
 					some = itr + "s";
+					
 					obj.put(some, reqCPU);
+					
 					arr[itr] = reqCPU;
 //					System.out.println(sb.toString());
 				}
@@ -80,6 +83,7 @@ public class ReadFile {
 			for (int i = 0; i < arr.length; i++) {
 				total = total + arr[i];
 			}
+			
 			double average = total / arr.length;
 
 //			  System.out.println(total);
@@ -87,13 +91,14 @@ public class ReadFile {
 
 			obj.put("total", total);
 			obj.put("average", average);
+			
+//			pushing to db
 			pStmt.setDouble(2, average);
 			pStmt.setDouble(3, total);
 			pStmt.execute();
 //			  
 //			printing the json
 			System.out.println(obj);
-			// 1. Get a connection to database
 
 		} catch (Exception e) {
 			e.printStackTrace();

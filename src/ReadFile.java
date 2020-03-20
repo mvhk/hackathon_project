@@ -18,19 +18,18 @@ public class ReadFile {
 
 				while (stringTokenizer.hasMoreElements()) {
 
-					Integer rand1 = Integer.parseInt(stringTokenizer.nextElement().toString());
-					String rand2 = stringTokenizer.nextElement().toString();
-					Integer rand3 = Integer.parseInt(stringTokenizer.nextElement().toString());
-					Integer rand4 = Integer.parseInt(stringTokenizer.nextElement().toString());
-					String rand5 = stringTokenizer.nextElement().toString();
-					String rand6 = stringTokenizer.nextElement().toString();
-					String rand7 = stringTokenizer.nextElement().toString();
-					String rand8 = stringTokenizer.nextElement().toString();
+					int x=0;
+					while(x<8) {
+						stringTokenizer.nextElement().toString();
+						x++;
+					}
+					
 //					required line
 					Double reqCPU = Double.parseDouble(stringTokenizer.nextElement().toString());
-					String rand9 = stringTokenizer.nextElement().toString();
-					String rand10 = stringTokenizer.nextElement().toString();
-					String rand11 = stringTokenizer.nextElement().toString();
+					while(x<11) {
+						stringTokenizer.nextElement().toString();
+						x++;
+					}
 
 					StringBuilder sb = new StringBuilder();
 					sb.append(itr + "s" + reqCPU);

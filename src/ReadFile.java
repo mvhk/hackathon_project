@@ -1,5 +1,6 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -73,7 +74,7 @@ public class ReadFile {
 				StringTokenizer stringTokenizer = new StringTokenizer(line, " ");
 
 //				pushing the transaction name to the table for the particular row
-				pStmt.setString(1, "Transaction2");
+				pStmt.setString(1, "Transaction4");
 
 				while (stringTokenizer.hasMoreElements()) {
 //					iterating to required CPU value in a row
@@ -125,18 +126,32 @@ public class ReadFile {
 			obj.put("average", average);
 
 //			pushing to db
-			pStmt.setDouble(2, average);
-			pStmt.setDouble(3, total);
+			pStmt.setDouble(2, Math.round(average * 100.0) / 100.0);
+			pStmt.setDouble(3, Math.round(total * 100.0) / 100.0);
 			pStmt.execute();
-			  
+
 //			printing the json
 			System.out.println(obj);
+
+//			pushing the entire data into a file
+			FileWriter fileWriter = new FileWriter("sample.json");
+			try {
+//				converting json object to string and writing it to a file
+				fileWriter.write(obj.toJSONString());
+				System.out.println("writing the json successful");
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			} finally {
+				fileWriter.flush();
+				fileWriter.close();
+			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			try {
-				
+
 				if (br != null)
 					br.close();
 

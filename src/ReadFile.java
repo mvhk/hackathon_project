@@ -47,8 +47,11 @@ public class ReadFile {
 
 	public static void main(String[] args) {
 
-//		Json object initialization
-		JSONObject obj = new JSONObject();
+//		Json obj1ect initialization
+		JSONObject obj1 = new JSONObject();
+		JSONObject obj2 = new JSONObject();
+//		JSONObject obj3 = new JSONObject();
+
 
 		try {
 
@@ -74,7 +77,7 @@ public class ReadFile {
 				StringTokenizer stringTokenizer = new StringTokenizer(line, " ");
 
 //				pushing the transaction name to the table for the particular row
-				pStmt.setString(1, "Transaction4");
+				pStmt.setString(1, "Transaction6");
 
 				while (stringTokenizer.hasMoreElements()) {
 //					iterating to required CPU value in a row
@@ -106,7 +109,7 @@ public class ReadFile {
 //					pushing it to json
 					some = itr + "s";
 
-					obj.put(some, reqCPU);
+					obj1.put(some, reqCPU);
 
 					arr[itr] = reqCPU;
 //					System.out.println(sb.toString());
@@ -121,9 +124,9 @@ public class ReadFile {
 
 //			  System.out.println(total);
 //			  System.out.println(average);
-
-			obj.put("total", total);
-			obj.put("average", average);
+			obj2.put("values",obj1);
+			obj2.put("total", total);
+			obj2.put("average", average);
 
 //			pushing to db
 			pStmt.setDouble(2, Math.round(average * 100.0) / 100.0);
@@ -131,13 +134,13 @@ public class ReadFile {
 			pStmt.execute();
 
 //			printing the json
-			System.out.println(obj);
+			System.out.println(obj2);
 
 //			pushing the entire data into a file
 			FileWriter fileWriter = new FileWriter("sample.json");
 			try {
-//				converting json object to string and writing it to a file
-				fileWriter.write(obj.toJSONString());
+//				converting json obj1ect to string and writing it to a file
+				fileWriter.write(obj2.toJSONString());
 				System.out.println("writing the json successful");
 
 			} catch (Exception e) {

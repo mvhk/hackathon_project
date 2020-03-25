@@ -29,7 +29,7 @@ public class ReadFile {
 	static double total = 0;
 
 //	maximum value in the given input
-	static double max = 0;
+	static double maximum = 0;
 
 //	Initializing the connection
 	static Connection connection = null;
@@ -88,7 +88,7 @@ public class ReadFile {
 //				pushing the transaction name to the table for the particular row
 //				change the transaction name for each run because it is primary key
 
-				pStmt.setString(1, "Transaction3");
+				pStmt.setString(1, "Transaction5");
 
 				while (stringTokenizer.hasMoreElements()) {
 //					iterating to required CPU value in a row
@@ -101,10 +101,10 @@ public class ReadFile {
 
 //					required line
 					Double reqCPU = Double.parseDouble(stringTokenizer.nextElement().toString());
-//					System.out.println(reqCPU);
+					System.out.println(reqCPU);
 //					changing the max value
-					if (max < reqCPU)
-						max = reqCPU;
+					if (maximum < reqCPU)
+						maximum = reqCPU;
 
 					while (x < 11) {
 						stringTokenizer.nextElement().toString();
@@ -128,24 +128,25 @@ public class ReadFile {
 
 			}
 			for (int i = 0; i < arr.length; i++) {
+				
 				total += arr[i];
 			}
 
-			double avg = total / arr.length;
+			double average =  total / arr.length;
 
 //			  System.out.println(total);
 //			  System.out.println(avg);
-			max = Math.round(max * 100.0) / 100.0;
-			avg = Math.round(avg * 100.0) / 100.0;
+			maximum = Math.round(maximum * 100.0) / 100.0;
+			average = Math.round(average * 100.0) / 100.0;
 
 //			inserting the values into json
 			obj2.put("values", obj1);
-			obj2.put("max", max);
-			obj2.put("average", avg);
+			obj2.put("max", maximum);
+			obj2.put("average", average);
 
 //			pushing to db
-			pStmt.setDouble(2, avg);
-			pStmt.setDouble(3, max);
+			pStmt.setDouble(2, average);
+			pStmt.setDouble(3, maximum);
 			pStmt.execute();
 
 //			printing the json
@@ -172,7 +173,7 @@ public class ReadFile {
 				double maximumresult = results.getDouble(2);
 				double averageresult = results.getDouble(3);
 
-				System.out.println(transactionname + " " + maximumresult + " " + averageresult);
+//				System.out.println(transactionname + " " + maximumresult + " " + averageresult);
 
 //				on new Iteration pushing the transactionname, maximumresult, averageresult to the db as new row
 				printWriter.println("<tr>" + "<td>" + transactionname + "</td>" + "<td>" + maximumresult + "</td>"

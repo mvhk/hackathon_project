@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.StringTokenizer;
 
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import com.mysql.jdbc.PreparedStatement;
@@ -36,7 +37,8 @@ public class ReadFile {
 
 //	Initializing the Statement
 	static Statement statement = null;
-
+	static String transname = "Transaction10";
+	static JSONArray array = new JSONArray();
 //	Resultset
 	ResultSet rs = null;
 
@@ -52,7 +54,7 @@ public class ReadFile {
 //		Json obj1ect initialization
 		JSONObject obj1 = new JSONObject();
 		JSONObject obj2 = new JSONObject();
-
+		JSONObject obj3 = new JSONObject();
 //		pushing the entire data into a file
 		FileWriter fileWriter = new FileWriter("sample.json");
 
@@ -60,9 +62,8 @@ public class ReadFile {
 		PrintWriter printWriter = new PrintWriter("sample.html");
 
 //		writing the data to files - Starting of table before looping in the table
-		printWriter.println("<table border=1>");
-		printWriter.println("<caption>CPU VALUES</caption>");
-		printWriter.println("<tr><th>Transaction Name</th><th>MAXIMUM CPU TIME</th><th>AVERAGE CPU TIME</th></tr>");
+		printWriter.println(
+				"<table border=1><caption>CPU VALUES</caption><tr><th>Transaction Name</th><th>MAXIMUM CPU TIME</th><th>AVERAGE CPU TIME</th></tr>");
 		try {
 
 //			getting the connection from the server
@@ -89,7 +90,7 @@ public class ReadFile {
 //				pushing the transaction name to the table for the particular row
 //				change the transaction name for each run because it is primary key
 
-				pStmt.setString(1, "Transaction6");
+				pStmt.setString(1, transname);
 
 				while (stringTokenizer.hasMoreElements()) {
 //					iterating to required CPU value in a row
@@ -146,6 +147,8 @@ public class ReadFile {
 			obj2.put("max", maximum);
 			obj2.put("average", average);
 
+			obj3.put(transname, obj2);
+			array.add(obj3);
 //			pushing to db
 			pStmt.setDouble(2, maximum);
 			pStmt.setDouble(3, average);
@@ -156,7 +159,7 @@ public class ReadFile {
 
 			try {
 //				converting json object to string and writing it to a file
-				fileWriter.write(obj2.toJSONString());
+				fileWriter.write(array.toJSONString());
 
 			} catch (Exception e) {
 				e.printStackTrace();

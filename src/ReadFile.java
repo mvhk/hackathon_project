@@ -89,7 +89,7 @@ public class ReadFile {
 //				pushing the transaction name to the table for the particular row
 //				change the transaction name for each run because it is primary key
 
-				pStmt.setString(1, "Transaction5");
+				pStmt.setString(1, "Transaction6");
 
 				while (stringTokenizer.hasMoreElements()) {
 //					iterating to required CPU value in a row
@@ -102,7 +102,8 @@ public class ReadFile {
 
 //					required line
 					Double reqCPU = Double.parseDouble(stringTokenizer.nextElement().toString());
-					System.out.println(reqCPU);
+
+//					System.out.println(reqCPU);
 //					changing the max value
 					if (maximum < reqCPU)
 						maximum = reqCPU;
@@ -129,14 +130,14 @@ public class ReadFile {
 
 			}
 			for (int i = 0; i < arr.length; i++) {
-				
+
 				total += arr[i];
 			}
 
 			double average = total / arr.length;
 
-//			  System.out.println(total);
-//			  System.out.println(avg);
+			System.out.println(total);
+			System.out.println(average);
 			maximum = Math.round(maximum * 100.0) / 100.0;
 			average = Math.round(average * 100.0) / 100.0;
 
@@ -151,10 +152,10 @@ public class ReadFile {
 			pStmt.execute();
 
 //			printing the json
-//			System.out.println(obj2);
+			System.out.println(obj2);
 
 			try {
-//				converting json obj1ect to string and writing it to a file
+//				converting json object to string and writing it to a file
 				fileWriter.write(obj2.toJSONString());
 
 			} catch (Exception e) {
@@ -181,12 +182,14 @@ public class ReadFile {
 						+ "<td>" + averageresult + "</td>" + "</tr>" + "\n");
 			}
 			printWriter.println("</table>");
+//			closing the PrintWriter 
 			printWriter.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
 			try {
 
+//				closing the BufferedReader
 				if (br != null)
 					br.close();
 

@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -24,7 +25,7 @@ public class ReadFile {
 //	array for calculating the max and avg
 	static double[] arr = new double[1000];
 
-//	total for counting the average
+//	total for counting the avg
 	static double total = 0;
 
 //	maximum value in the given input
@@ -45,14 +46,22 @@ public class ReadFile {
 	static String userName = "root";
 	static String passWord = "1234";
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws Exception {
 
 //		Json obj1ect initialization
 		JSONObject obj1 = new JSONObject();
 		JSONObject obj2 = new JSONObject();
-//		JSONObject obj3 = new JSONObject();
 
+//		pushing the entire data into a file
+		FileWriter fileWriter = new FileWriter("sample.json");
 
+//		pushing the data fetched from db to HMTL file
+		PrintWriter printWriter = new PrintWriter("sample.html");
+
+//		writing the data to files - Starting of table before looping in the table
+		printWriter.println("<table border=1>");
+		printWriter.println("<caption>CPU VALUES</caption>");
+		printWriter.println("<tr><th>Transaction Name</th><th>MAXIMUM CPU TIME</th><th>AVERAGE CPU TIME</th></tr>");
 		try {
 
 //			getting the connection from the server
@@ -77,7 +86,9 @@ public class ReadFile {
 				StringTokenizer stringTokenizer = new StringTokenizer(line, " ");
 
 //				pushing the transaction name to the table for the particular row
-				pStmt.setString(1, "Transaction6");
+//				change the transaction name for each run because it is primary key
+
+				pStmt.setString(1, "Transaction3");
 
 				while (stringTokenizer.hasMoreElements()) {
 //					iterating to required CPU value in a row
@@ -90,7 +101,7 @@ public class ReadFile {
 
 //					required line
 					Double reqCPU = Double.parseDouble(stringTokenizer.nextElement().toString());
-
+//					System.out.println(reqCPU);
 //					changing the max value
 					if (max < reqCPU)
 						max = reqCPU;
@@ -117,31 +128,32 @@ public class ReadFile {
 
 			}
 			for (int i = 0; i < arr.length; i++) {
-				total = total + arr[i];
+				total += arr[i];
 			}
 
-			double average = total / arr.length;
+			double avg = total / arr.length;
 
 //			  System.out.println(total);
-//			  System.out.println(average);
-			obj2.put("values",obj1);
-			obj2.put("total", total);
-			obj2.put("average", average);
+//			  System.out.println(avg);
+			max = Math.round(max * 100.0) / 100.0;
+			avg = Math.round(avg * 100.0) / 100.0;
+
+//			inserting the values into json
+			obj2.put("values", obj1);
+			obj2.put("max", max);
+			obj2.put("average", avg);
 
 //			pushing to db
-			pStmt.setDouble(2, Math.round(average * 100.0) / 100.0);
-			pStmt.setDouble(3, Math.round(total * 100.0) / 100.0);
+			pStmt.setDouble(2, avg);
+			pStmt.setDouble(3, max);
 			pStmt.execute();
 
 //			printing the json
-			System.out.println(obj2);
+//			System.out.println(obj2);
 
-//			pushing the entire data into a file
-			FileWriter fileWriter = new FileWriter("sample.json");
 			try {
 //				converting json obj1ect to string and writing it to a file
 				fileWriter.write(obj2.toJSONString());
-				System.out.println("writing the json successful");
 
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -150,6 +162,24 @@ public class ReadFile {
 				fileWriter.close();
 			}
 
+//			Fetching the db details using "SELECT Command writing it to the html"
+			ResultSet results = statement.executeQuery("SELECT * FROM hackpro.table1");
+
+			while (results.next()) {
+
+//			Get the data from the current row using the column index - column data
+				String transactionname = results.getString(1);
+				double maximumresult = results.getDouble(2);
+				double averageresult = results.getDouble(3);
+
+				System.out.println(transactionname + " " + maximumresult + " " + averageresult);
+
+//				on new Iteration pushing the transactionname, maximumresult, averageresult to the db as new row
+				printWriter.println("<tr>" + "<td>" + transactionname + "</td>" + "<td>" + maximumresult + "</td>"
+						+ "<td>" + averageresult + "</td>" + "</tr>" + "\n");
+			}
+			printWriter.println("</table>");
+			printWriter.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {

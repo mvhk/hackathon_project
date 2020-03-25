@@ -46,6 +46,7 @@ public class ReadFile {
 	static String userName = "root";
 	static String passWord = "1234";
 
+	@SuppressWarnings("unchecked")
 	public static void main(String[] args) throws Exception {
 
 //		Json obj1ect initialization
@@ -73,7 +74,7 @@ public class ReadFile {
 
 //			Inserting the values into the table 
 			PreparedStatement pStmt = (PreparedStatement) connection
-					.prepareStatement("INSERT into table1 (transaction, avg, max) values(?,?,?)");
+					.prepareStatement("INSERT into table1 (transaction, max, avg) values(?,?,?)");
 
 			String line;
 
@@ -132,7 +133,7 @@ public class ReadFile {
 				total += arr[i];
 			}
 
-			double average =  total / arr.length;
+			double average = total / arr.length;
 
 //			  System.out.println(total);
 //			  System.out.println(avg);
@@ -145,8 +146,8 @@ public class ReadFile {
 			obj2.put("average", average);
 
 //			pushing to db
-			pStmt.setDouble(2, average);
-			pStmt.setDouble(3, maximum);
+			pStmt.setDouble(2, maximum);
+			pStmt.setDouble(3, average);
 			pStmt.execute();
 
 //			printing the json
@@ -163,7 +164,7 @@ public class ReadFile {
 				fileWriter.close();
 			}
 
-//			Fetching the db details using "SELECT Command writing it to the html"
+//			Fetching the db details using "SELECT Command writing it to the HTML"
 			ResultSet results = statement.executeQuery("SELECT * FROM hackpro.table1");
 
 			while (results.next()) {

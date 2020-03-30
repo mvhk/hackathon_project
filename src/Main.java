@@ -51,7 +51,8 @@ public class Main {
 //			getting the required memory value
 			val = array[1].trim();
 
-			memory_val = (Double.parseDouble(val) / 1000);
+//			kb to mb  = 1024
+			memory_val = (Double.parseDouble(val) / 1024);
 
 //			finding maximum value
 			if (maximum < memory_val) {

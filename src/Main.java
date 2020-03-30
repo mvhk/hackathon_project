@@ -1,17 +1,12 @@
 import java.io.*;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
 import org.json.simple.JSONObject;
-import com.mysql.jdbc.PreparedStatement;
 
 public class Main {
 
 	static BufferedReader bufferedReader = null;
 
 //	change the useCaseName, It is Primary Key in the Table
-	static String usecasename = "Sample6";
+	static String usecasename = "Sample111";
 
 //	Initializing the required variables
 	static Double maximum = 0.0, average = 0.0, memory_val = 0.0, total = 0.0;
@@ -32,7 +27,7 @@ public class Main {
 		JSONObject jsonObject1 = new JSONObject();
 
 //		getting the required input file
-		File inputFile = new File("C:\\Users\\haris\\Desktop\\Memory.txt");
+		File inputFile = new File("Memory.txt");
 
 		bufferedReader = new BufferedReader(new FileReader(inputFile));
 
@@ -80,14 +75,13 @@ public class Main {
 		average = Math.round(average * 100.0) / 100.0;
 
 //		pushing to DB 
-		System.out.println(pushToDB());
-
+		new pushToDB(usecasename, maximum, average);
 //		create a JSON File
-		System.out.println(createJsonFile(jsonObject1,jsonObject0));
+		System.out.println(createJsonFile(jsonObject1, jsonObject0));
 	}
 
 	@SuppressWarnings("resource")
-	private static String createJsonFile(JSONObject jsonObject1,JSONObject jsonObject0) throws IOException {
+	private static String createJsonFile(JSONObject jsonObject1, JSONObject jsonObject0) throws IOException {
 
 		jsonObject0.put("Usecasename", usecasename);
 		jsonObject0.put("AverageMemory(MB)", average);
@@ -101,35 +95,4 @@ public class Main {
 
 	}
 
-	private static String pushToDB() throws SQLException {
-
-//		Initializing the connection
-		Connection connection = null;
-
-//		Database Initialization
-		String databaseName = "HackPro";
-		String url = "jdbc:mysql://localhost:3333/" + databaseName;
-		String userName = "root";
-		String passWord = "1234";
-
-//		Initializing the Statement
-		Statement statement = null;
-
-//		Initializing the connection
-		connection = DriverManager.getConnection(url, userName, passWord);
-
-		statement = connection.createStatement();
-
-//		Inserting the values into the table 
-		PreparedStatement preparedStatement = (PreparedStatement) connection
-				.prepareStatement("INSERT INTO table2 (useCaseName, max, avg) VALUES(?,?,?)");
-		preparedStatement.setString(1, usecasename);
-		preparedStatement.setDouble(2, maximum);
-		preparedStatement.setDouble(3, average);
-
-		preparedStatement.execute();
-
-		return "Pushed to DB";
-
-	}
 }
